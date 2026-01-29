@@ -4,8 +4,8 @@
   "name": "Fructu",
   "colors": {
     "primary": "#1443FF",
-    "light": "#2F6EFF",
-    "dark": "#1443FF"
+    "light": "#1443FF",
+    "dark": "#2062FA"
   },
   "appearance": {
     "default": "light",
@@ -53,13 +53,20 @@
   },
   "logo": {
     "light": "/images/FructuLightMode2.png",
-    "dark": "/images/FructuDarkMode2.png"
+    "dark": "/images/FructuDarkMode2.png",
+    "href": "https://fructu.co/"
   },
   "background": {
-    "decoration": "grid"
+    "decoration": "grid",
+    "color": {
+      "dark": "#121212"
+    }
   },
   "fonts": {
     "family": "Poppins",
-    "weight": 400
+    "weight": 400,
+    "body": {
+      "family": "Inter"
+    }
   }
 }
