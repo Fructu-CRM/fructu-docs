@@ -1,83 +1,143 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Fructu API",
-    "description": "API pour interagir avec votre Workspace Fructu",
+    "description": "",
     "version": "1.0.0"
   },
-  "servers": [
+  "tags": [
     {
-      "url": "https://api.fructu.co"
+      "name": "Records"
+    },
+    {
+      "name": "Notes"
+    },
+    {
+      "name": "Tasks"
+    },
+    {
+      "name": "Objects"
+    },
+    {
+      "name": "Lists"
+    },
+    {
+      "name": "Fields"
+    },
+    {
+      "name": "Options"
+    },
+    {
+      "name": "Users"
     }
   ],
   "paths": {
-    "/v1/contact": {
+    "/v2/records": {
       "post": {
-        "summary": "Create Contact",
-        "description": "Créer un nouveau Contact dans votre Workspace Fructu.",
-        "operationId": "createContact",
-        "tags": ["Contact"],
-        "security": [
-          {
-            "bearerAuth": []
-          }
+        "summary": "Create a Record",
+        "deprecated": false,
+        "description": "",
+        "operationId": "createNote",
+        "tags": [
+          "Records"
         ],
+        "parameters": [],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "firstname": {
+                  "object": {
                     "type": "string",
-                    "description": "Prénom du Contact",
-                    "example": "John"
-                  },
-                  "lastname": {
-                    "type": "string",
-                    "description": "Nom du Contact",
-                    "example": "Doe"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Adresse Email du Contact",
-                    "example": "johndoe@example.com"
-                  },
-                  "phone": {
-                    "type": "string",
-                    "description": "Numéro de téléphone du Contact",
-                    "example": "+33611223344"
-                  },
-                  "status": {
-                    "type": "string",
-                    "description": "Statut actuel du Contact (ID)",
-                    "example": "1746014351513x596211749688053600"
+                    "description": "ID of the Object this record belongs to"
                   },
                   "lists": {
-                    "type": "string",
-                    "description": "Ajouter le Contact dans une ou plusieurs listes (ID)",
-                    "example": ["1746014351513x596211749945813904","1746014351513x3219381149688053629"]
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of List IDs this record belongs to"
                   },
-                  "user": {
-                    "type": "string",
-                    "description": "Attribuer le Contact à un utilisateur (ID)",
-                    "example": "1746014351513x595821749688053394"
+                  "fields": {
+                    "type": "object",
+                    "properties": {
+                      "{key}": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "description": "Text value"
+                          },
+                          {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Number value"
+                          },
+                          {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "date-time",
+                            "description": "Date value"
+                          },
+                          {
+                            "type": "boolean",
+                            "description": "Boolean value"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Array of Option IDs assigned to this field"
+                          },
+                          {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ID of the User assigned to this field (null if empty)"
+                          },
+                          {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ID of the Option assigned to this field (null if empty)"
+                          },
+                          {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ID of the Record assigned to this field (null if empty)"
+                          }
+                        ],
+                        "description": "A field api_slug or field_id as the key, and a value."
+                      }
+                    },
+                    "description": "Record fields values"
                   },
-                  "note": {
+                  "assigned_to": {
                     "type": "string",
-                    "description": "Attachez une note à ce Contact",
-                    "example": "Exemple de note."
+                    "description": "ID of the User assigned to this record (null if empty)"
                   }
-                }
-              }
+                },
+                "required": [
+                  "object"
+                ]
+              },
+              "examples": {}
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -85,36 +145,684 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "ID du Contact créé"
+                      "description": "Unique identifier of the record"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Processing"
                     }
-                  }
+                  },
+                  "required": [
+                    "id",
+                    "status"
+                  ]
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
+            },
+            "headers": {}
           }
-        }
-      }
-    },
-    "/v1/status": {
-      "get": {
-        "summary": "List Status",
-        "description": "Récupérer la liste des statuts de votre Workspace.",
-        "operationId": "getStatus",
-        "tags": ["Status"],
+        },
         "security": [
           {
-            "bearerAuth": []
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/records/{id}": {
+      "get": {
+        "summary": "Retrieve a Record",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Records"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Record's unique id",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success. La réponse contient un objet avec une propriété `data` (liste des statuts).",
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier of the record"
+                    },
+                    "object": {
+                      "type": "string",
+                      "description": "ID of the Object this record belongs to"
+                    },
+                    "lists": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Array of List IDs this record belongs to"
+                    },
+                    "fields": {
+                      "type": "object",
+                      "properties": {
+                        "{key}": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "description": "Text value"
+                            },
+                            {
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "description": "Number value (null if empty)"
+                            },
+                            {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Date value (null if empty)",
+                              "format": "date-time"
+                            },
+                            {
+                              "type": "boolean",
+                              "description": "Boolean value"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "Array of Option IDs assigned to this field"
+                            },
+                            {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "ID of the User assigned to this field (null if empty)"
+                            },
+                            {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "ID of the Option assigned to this field (null if empty)"
+                            },
+                            {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "ID of the Record assigned to this field (null if empty)"
+                            }
+                          ],
+                          "description": "A field api_slug or field_id as the key, and a value."
+                        }
+                      },
+                      "description": "Record fields values"
+                    },
+                    "assigned_to": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "ID of the User assigned to this record (null if empty)"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "Creation date and time (ISO 8601)",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "object",
+                    "lists",
+                    "fields",
+                    "assigned_to",
+                    "created_at"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Record",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Records"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Record's unique id",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/notes": {
+      "post": {
+        "summary": "Create a Note",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Notes"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string",
+                    "description": "Record's unique id"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "The main content of the note"
+                  }
+                },
+                "required": [
+                  "record",
+                  "content"
+                ]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier of the note"
+                    },
+                    "record": {
+                      "type": "string",
+                      "title": "Record",
+                      "description": "ID of the record this note is attached to"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Text content of the note"
+                    },
+                    "created_by": {
+                      "type": "string",
+                      "description": "ID of the user who created the note"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "Creation date and time (ISO 8601)",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "record",
+                    "content",
+                    "created_by",
+                    "created_at"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/notes/{id}": {
+      "get": {
+        "summary": "Retrieve a Note",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Notes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Note's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier of the note"
+                    },
+                    "record": {
+                      "type": "string",
+                      "title": "Record",
+                      "description": "ID of the record this note is attached to"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Text content of the note"
+                    },
+                    "created_by": {
+                      "type": "string",
+                      "description": "ID of the user who created the note"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "Creation date and time (ISO 8601)",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "record",
+                    "content",
+                    "created_by",
+                    "created_at"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Note",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Notes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Note's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/tasks": {
+      "post": {
+        "summary": "Create a Task",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string",
+                    "description": "ID of the record this task is linked to"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the task"
+                  },
+                  "due_at": {
+                    "type": "string",
+                    "description": "Due date and time (ISO 8601)",
+                    "format": "date-time"
+                  },
+                  "assigned_to": {
+                    "type": "string",
+                    "description": "ID of the user assigned to this task"
+                  },
+                  "is_completed": {
+                    "type": "boolean",
+                    "description": "Whether the task has been completed.",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "record",
+                  "title",
+                  "due_at",
+                  "assigned_to"
+                ]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier of the task"
+                    },
+                    "record": {
+                      "type": "string",
+                      "description": "ID of the record this task is linked to"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title/description of the task"
+                    },
+                    "due_at": {
+                      "type": "string",
+                      "description": "Due date and time (ISO 8601)",
+                      "format": "date-time"
+                    },
+                    "assigned_to": {
+                      "type": "string",
+                      "title": "",
+                      "description": "ID of the user assigned to this task"
+                    },
+                    "is_completed": {
+                      "type": "boolean",
+                      "description": "Whether the task has been completed."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "Creation date and time (ISO 8601)",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "record",
+                    "title",
+                    "due_at",
+                    "assigned_to",
+                    "is_completed",
+                    "created_at"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/tasks/{id}": {
+      "get": {
+        "summary": "Retrieve a Task",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Task's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier of the task"
+                    },
+                    "record": {
+                      "type": "string",
+                      "description": "ID of the record this task is linked to"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title/description of the task"
+                    },
+                    "due_at": {
+                      "type": "string",
+                      "description": "Due date and time (ISO 8601)",
+                      "format": "date-time"
+                    },
+                    "assigned_to": {
+                      "type": "string",
+                      "title": "",
+                      "description": "ID of the user assigned to this task"
+                    },
+                    "is_completed": {
+                      "type": "boolean",
+                      "description": "Whether the task has been completed."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "Creation date and time (ISO 8601)",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "record",
+                    "title",
+                    "due_at",
+                    "assigned_to",
+                    "is_completed",
+                    "created_at"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Task",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Task's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/objects/{id}": {
+      "get": {
+        "summary": "Retrieve an Object",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Objects"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Object's unique id",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/objects": {
+      "get": {
+        "summary": "List all Objects",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Objects"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -123,59 +831,87 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "label": {
-                            "type": "string",
-                            "description": "Label du statut"
-                          },
-                          "id": {
-                            "type": "string",
-                            "description": "ID unique du statut"
-                          }
-                        }
+                        "$ref": "#/components/schemas/Object"
                       }
                     }
-                  }
-                },
-                "example": {
-                  "data": [
-                    {
-                      "label": "À contacter",
-                      "id": "1742285896869x689052030883594200"
-                    },
-                    {
-                      "label": "En attente",
-                      "id": "1742285896869x689052030883594201"
-                    }
+                  },
+                  "required": [
+                    "data"
                   ]
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
+            },
+            "headers": {}
           }
-        }
-      }
-    },
-    "/v1/list": {
-      "get": {
-        "summary": "List Lists",
-        "description": "Récupérer la liste des listes de votre Workspace.",
-        "operationId": "getLists",
-        "tags": ["Lists"],
+        },
         "security": [
           {
-            "bearerAuth": []
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/lists/{id}": {
+      "get": {
+        "summary": "Retrieve a List",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Lists"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success. La réponse contient un objet avec une propriété `data`.",
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/objects/{id}/lists": {
+      "get": {
+        "summary": "List Object Lists",
+        "deprecated": false,
+        "description": "Retrieves all lists linked to the specified object.",
+        "tags": [
+          "Lists"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Object's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -184,59 +920,87 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "label": {
-                            "type": "string",
-                            "description": "Label de la liste"
-                          },
-                          "id": {
-                            "type": "string",
-                            "description": "ID unique de la liste"
-                          }
-                        }
+                        "$ref": "#/components/schemas/List"
                       }
                     }
-                  }
-                },
-                "example": {
-                  "data": [
-                    {
-                      "label": "Clients",
-                      "id": "1742285896869x689052030883594200"
-                    },
-                    {
-                      "label": "Prospects",
-                      "id": "1742285896869x689052030883594201"
-                    }
+                  },
+                  "required": [
+                    "data"
                   ]
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
+            },
+            "headers": {}
           }
-        }
-      }
-    },
-    "/v1/user": {
-      "get": {
-        "summary": "List Users",
-        "description": "Récupérer la liste des membres de votre Workspace.",
-        "operationId": "getUsers",
-        "tags": ["Users"],
+        },
         "security": [
           {
-            "bearerAuth": []
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/fields/{id}": {
+      "get": {
+        "summary": "Retrieve a Field",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Fields"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success. La réponse contient un objet avec une propriété `data`.",
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/objects/{id}/fields": {
+      "get": {
+        "summary": "List Object Fields",
+        "deprecated": false,
+        "description": "Retrieves all fields linked to the specified object.",
+        "tags": [
+          "Fields"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Object's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -245,70 +1009,682 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "label": {
-                            "type": "string",
-                            "description": "Nom de l'utilisateur"
-                          },
-                          "id": {
-                            "type": "string",
-                            "description": "ID unique de l'utilisateur"
-                          }
-                        }
+                        "$ref": "#/components/schemas/Field"
                       }
                     }
-                  }
-                },
-                "example": {
-                  "data": [
-                    {
-                      "label": "Tom Vigneres",
-                      "id": "1742285896869x689052030883594200"
-                    },
-                    {
-                      "label": "John Doe",
-                      "id": "1742285896869x689052030883594201"
-                    }
+                  },
+                  "required": [
+                    "data"
                   ]
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
+            },
+            "headers": {}
           }
-        }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/options/{id}": {
+      "get": {
+        "summary": "Retrieve an Option",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Options"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Option's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Option"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/fields/{id}/options": {
+      "get": {
+        "summary": "List Field Options",
+        "deprecated": false,
+        "description": "Retrieves all options linked to the specified field.\n",
+        "tags": [
+          "Options"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Field's unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Option"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/users/{id}": {
+      "get": {
+        "summary": "Retrieve a User",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User's unique id",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      }
+    },
+    "/v2/users": {
+      "get": {
+        "summary": "List all Users",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
       }
     }
   },
-  "tags": [
-    {
-      "name": "Lead",
-      "description": "Endpoints pour gérer les leads"
-    },
-    {
-      "name": "Status",
-      "description": "Endpoints pour gérer les statuts"
-    },
-    {
-      "name": "List",
-      "description": "Endpoints pour gérer les listes"
-    },
-    {
-      "name": "User",
-      "description": "Endpoints pour gérer les membres du Workspace"
-    }
-  ],
+  "webhooks": {},
   "components": {
+    "schemas": {
+      "Record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the record"
+          },
+          "object": {
+            "type": "string",
+            "description": "ID of the Object this record belongs to"
+          },
+          "lists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of List IDs this record belongs to"
+          },
+          "fields": {
+            "type": "object",
+            "properties": {
+              "{key}": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "description": "Text value"
+                  },
+                  {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "description": "Number value (null if empty)"
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Date value (null if empty)",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "boolean",
+                    "description": "Boolean value"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of Option IDs assigned to this field"
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ID of the User assigned to this field (null if empty)"
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ID of the Option assigned to this field (null if empty)"
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ID of the Record assigned to this field (null if empty)"
+                  }
+                ],
+                "description": "A field api_slug or field_id as the key, and a value."
+              }
+            },
+            "description": "Record fields values"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ID of the User assigned to this record (null if empty)"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Creation date and time (ISO 8601)",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "object",
+          "assigned_to",
+          "lists",
+          "fields"
+        ]
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the note"
+          },
+          "record": {
+            "type": "string",
+            "title": "Record",
+            "description": "ID of the record this note is attached to"
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content of the note"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "ID of the user who created the note"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Creation date and time (ISO 8601)",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "record",
+          "created_at",
+          "created_by"
+        ]
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the task"
+          },
+          "record": {
+            "type": "string",
+            "description": "ID of the record this task is linked to"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title/description of the task"
+          },
+          "due_at": {
+            "type": "string",
+            "description": "Due date and time (ISO 8601)",
+            "format": "date-time"
+          },
+          "assigned_to": {
+            "type": "string",
+            "title": "",
+            "description": "ID of the user assigned to this task"
+          },
+          "is_completed": {
+            "type": "boolean",
+            "description": "Whether the task has been completed."
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Creation date and time (ISO 8601)",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "due_at",
+          "assigned_to",
+          "created_at",
+          "record",
+          "is_completed"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the user"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Full name"
+          },
+          "email_address": {
+            "type": "string",
+            "description": "Email address"
+          }
+        },
+        "required": [
+          "full_name",
+          "id",
+          "email_address"
+        ]
+      },
+      "Object": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the object"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the object"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Associated icon identifier"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date and time (ISO 8601)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "icon",
+          "created_at"
+        ]
+      },
+      "List": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the list"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the list"
+          },
+          "color": {
+            "type": "string",
+            "description": "Hexadecimal color code for UI display"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date and time (ISO 8601)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "color",
+          "created_at"
+        ]
+      },
+      "Field": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the field"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Identifier used in API requests and responses."
+          },
+          "name": {
+            "type": "string",
+            "description": "Label displayed in the UI"
+          },
+          "type": {
+            "type": "string",
+            "description": "Data type: \"text\", \"number\", \"date\", \"boolean\", \"select\", \"multi_select\", \"relation\", \"pipeline\"."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date and time (ISO 8601)"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "slug",
+          "name",
+          "created_at"
+        ]
+      },
+      "Option": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the option"
+          },
+          "field": {
+            "type": "string",
+            "description": "ID of the field this option belongs to"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label displayed to the user"
+          },
+          "color": {
+            "type": "string",
+            "description": "Hexadecimal color code for display"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date and time (ISO 8601)"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "color",
+          "field",
+          "created_at"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          },
+          "trace": {
+            "type": "object",
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "buildId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "rayId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "timestamp",
+              "requestId",
+              "buildId",
+              "rayId"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "instance",
+          "trace"
+        ]
+      }
+    },
+    "responses": {
+      "Unauthorized ": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "title": "",
+              "type": "object",
+              "properties": {},
+              "required": []
+            },
+            "examples": {
+              "Example": {
+                "summary": "Example",
+                "value": {
+                  "type": "https://httpproblems.com/http-status/401",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Authorization Failed",
+                  "instance": "/foo/bar",
+                  "trace": {
+                    "timestamp": "2025-12-25T23:49:16.368Z",
+                    "requestId": "49d019df-a464-4527-9fdb-86c13d81926f",
+                    "buildId": "c2bd9b25-b9b7-4d8e-9eab-ac5e2d0d0dcb",
+                    "rayId": "9b3c3be825116f02"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Not Found ": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Example": {
+                "summary": "Example",
+                "value": {
+                  "type": "https://httpproblems.com/http-status/404",
+                  "title": "Not Found",
+                  "status": 404,
+                  "instance": "/foo/bar",
+                  "trace": {
+                    "timestamp": "2025-12-25T23:54:51.074Z",
+                    "requestId": "68082f17-4c8c-4ecf-bcf5-41df714e4066",
+                    "buildId": "c2bd9b25-b9b7-4d8e-9eab-ac5e2d0d0dcb",
+                    "rayId": "9b3c441527d3b598"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Bad Request ": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "title": "",
+              "type": "object",
+              "properties": {},
+              "required": []
+            },
+            "examples": {
+              "Example": {
+                "summary": "Example",
+                "value": {
+                  "type": "https://httpproblems.com/http-status/400",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Invalid or missing data in the request.",
+                  "instance": "/foo/bar",
+                  "trace": {
+                    "timestamp": "2025-12-25T23:49:16.368Z",
+                    "requestId": "49d019df-a464-4527-9fdb-86c13d81926f",
+                    "buildId": "c2bd9b25-b9b7-4d8e-9eab-ac5e2d0d0dcb",
+                    "rayId": "9b3c3be825116f02"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "securitySchemes": {
-      "bearerAuth": {
+      "API Key": {
         "type": "http",
         "scheme": "bearer"
       }
     }
-  }
+  },
+  "servers": [],
+  "security": [
+    {
+      "API Key": []
+    }
+  ]
 }
