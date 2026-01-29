@@ -116,7 +116,7 @@
                             "description": "ID of the Record assigned to this field (null if empty)"
                           }
                         ],
-                        "description": "A field api_slug or field_id as the key, and a value."
+                        "description": "A field slug as the key, and a value"
                       }
                     },
                     "description": "Record fields values"
@@ -226,14 +226,14 @@
                                 "number",
                                 "null"
                               ],
-                              "description": "Number value (null if empty)"
+                              "description": "Number value"
                             },
                             {
                               "type": [
                                 "string",
                                 "null"
                               ],
-                              "description": "Date value (null if empty)",
+                              "description": "Date value",
                               "format": "date-time"
                             },
                             {
@@ -252,24 +252,24 @@
                                 "string",
                                 "null"
                               ],
-                              "description": "ID of the User assigned to this field (null if empty)"
+                              "description": "ID of the User assigned to this field"
                             },
                             {
                               "type": [
                                 "string",
                                 "null"
                               ],
-                              "description": "ID of the Option assigned to this field (null if empty)"
+                              "description": "ID of the Option assigned to this field"
                             },
                             {
                               "type": [
                                 "string",
                                 "null"
                               ],
-                              "description": "ID of the Record assigned to this field (null if empty)"
+                              "description": "ID of the Record assigned to this field"
                             }
                           ],
-                          "description": "A field api_slug or field_id as the key, and a value."
+                          "description": "A field slug as the key, and a value"
                         }
                       },
                       "description": "Record fields values"
@@ -279,7 +279,7 @@
                         "string",
                         "null"
                       ],
-                      "description": "ID of the User assigned to this record (null if empty)"
+                      "description": "ID of the User assigned to this record"
                     },
                     "created_at": {
                       "type": "string",
@@ -402,10 +402,6 @@
                       "type": "string",
                       "description": "Text content of the note"
                     },
-                    "created_by": {
-                      "type": "string",
-                      "description": "ID of the user who created the note"
-                    },
                     "created_at": {
                       "type": "string",
                       "description": "Creation date and time (ISO 8601)",
@@ -416,7 +412,6 @@
                     "id",
                     "record",
                     "content",
-                    "created_by",
                     "created_at"
                   ]
                 }
@@ -472,10 +467,6 @@
                       "type": "string",
                       "description": "Text content of the note"
                     },
-                    "created_by": {
-                      "type": "string",
-                      "description": "ID of the user who created the note"
-                    },
                     "created_at": {
                       "type": "string",
                       "description": "Creation date and time (ISO 8601)",
@@ -486,7 +477,6 @@
                     "id",
                     "record",
                     "content",
-                    "created_by",
                     "created_at"
                   ]
                 }
@@ -1098,7 +1088,32 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Option"
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Unique identifier of the option"
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "Label displayed to the user"
+                          },
+                          "color": {
+                            "type": "string",
+                            "description": "Hexadecimal color code for display"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Creation date and time (ISO 8601)"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label",
+                          "color",
+                          "created_at"
+                        ]
                       }
                     }
                   },
@@ -1234,14 +1249,14 @@
                       "number",
                       "null"
                     ],
-                    "description": "Number value (null if empty)"
+                    "description": "Number value"
                   },
                   {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Date value (null if empty)",
+                    "description": "Date value",
                     "format": "date-time"
                   },
                   {
@@ -1260,24 +1275,24 @@
                       "string",
                       "null"
                     ],
-                    "description": "ID of the User assigned to this field (null if empty)"
+                    "description": "ID of the User assigned to this field"
                   },
                   {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "ID of the Option assigned to this field (null if empty)"
+                    "description": "ID of the Option assigned to this field"
                   },
                   {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "ID of the Record assigned to this field (null if empty)"
+                    "description": "ID of the Record assigned to this field"
                   }
                 ],
-                "description": "A field api_slug or field_id as the key, and a value."
+                "description": "A field slug as the key, and a value"
               }
             },
             "description": "Record fields values"
@@ -1287,7 +1302,7 @@
               "string",
               "null"
             ],
-            "description": "ID of the User assigned to this record (null if empty)"
+            "description": "ID of the User assigned to this record"
           },
           "created_at": {
             "type": "string",
@@ -1320,10 +1335,6 @@
             "type": "string",
             "description": "Text content of the note"
           },
-          "created_by": {
-            "type": "string",
-            "description": "ID of the user who created the note"
-          },
           "created_at": {
             "type": "string",
             "description": "Creation date and time (ISO 8601)",
@@ -1334,8 +1345,7 @@
           "id",
           "content",
           "record",
-          "created_at",
-          "created_by"
+          "created_at"
         ]
       },
       "Task": {
@@ -1480,6 +1490,27 @@
             "type": "string",
             "description": "Data type: \"text\", \"number\", \"date\", \"boolean\", \"select\", \"multi_select\", \"relation\", \"pipeline\"."
           },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the option"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Label displayed to the user"
+                }
+              },
+              "required": [
+                "id",
+                "label"
+              ]
+            },
+            "description": "List of options available for this field (if type = select, multi_select, pipeline)"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -1491,7 +1522,8 @@
           "type",
           "slug",
           "name",
-          "created_at"
+          "created_at",
+          "options"
         ]
       },
       "Option": {
@@ -1500,10 +1532,6 @@
           "id": {
             "type": "string",
             "description": "Unique identifier of the option"
-          },
-          "field": {
-            "type": "string",
-            "description": "ID of the field this option belongs to"
           },
           "label": {
             "type": "string",
@@ -1523,7 +1551,6 @@
           "id",
           "label",
           "color",
-          "field",
           "created_at"
         ]
       },
