@@ -123,7 +123,7 @@
                   },
                   "assigned_to": {
                     "type": "string",
-                    "description": "ID of the User assigned to this record (null if empty)"
+                    "description": "ID of the User assigned to this record"
                   }
                 },
                 "required": [
