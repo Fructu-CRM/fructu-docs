@@ -11,68 +11,30 @@
     "default": "light",
     "strict": false
   },
-  "favicon": "/favicon.svg",
+  "favicon": {
+    "light": "/images/FructuLightMode.svg",
+    "dark": "/images/FructuDarkMode.svg"
+  },
   "navigation": {
     "tabs": [
       {
-      "tab": "Documentation",
-      "description": "Prendre en main le CRM",
-      "icon": "book-open",
-      "groups": [
-        {
-          "group": "Démarrer sur Fructu",
-          "pages": [
-            "index"
-          ]
+        "tab": "API Reference",
+        "icon": "square-terminal",
+        "openapi": {
+          "source": "api-reference/OpenAPI.json",
+          "directory": "api-reference"
         },
-        {
-          "group": "Les bases du CRM",
-          "pages": [
-            "essentials/contacts",
-            "essentials/tasks",
-            "essentials/dashboard",
-            "essentials/workspace"
-          ]
-        }
-      ]
-    },
-    {
-      "tab": "API Reference",
-      "description": "Liste des endpoints",
-      "icon": "square-terminal",
-      "groups": [
-        {
-          "group": "API Reference",
-          "pages": [
+        "groups": [
+          {
+            "group": "API Reference",
+            "pages": [
               "api-reference/introduction",
               "api-reference/auth"
             ]
-        }
-      ],
-      "openapi": {
-        "source": "api-reference/OpenAPI.json",
-        "directory": "api-reference"
+          }
+        ]
       }
-    }
-  ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Site internet",
-          "href": "https://fructu.co",
-          "icon": "globe"
-        },
-        {
-          "anchor": "Mises à jour",
-          "href": "https://fructu.co/changelog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/light.svg",
-    "dark": "/dark.svg"
+    ]
   },
   "api": {
     "playground": {
@@ -88,5 +50,16 @@
   "footer": {
     "socials": {
     }
+  },
+  "logo": {
+    "light": "/images/FructuLightMode2.png",
+    "dark": "/images/FructuDarkMode2.png"
+  },
+  "background": {
+    "decoration": "grid"
+  },
+  "fonts": {
+    "family": "Poppins",
+    "weight": 400
   }
 }
